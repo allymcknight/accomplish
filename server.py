@@ -4,12 +4,12 @@ from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db
-
+import os
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.secret_key = os.environ['flask_app_key']
 
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
