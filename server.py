@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 
 app.secret_key = os.environ['flask_app_key']
-
+#avoid error message
 app.jinja_env.undefined = StrictUndefined
 
 
