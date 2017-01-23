@@ -22,9 +22,11 @@ class User(db.Model):
                         autoincrement=True,
                         primary_key=True)
     email = db.Column(db.String(64), nullable=True)
+    name = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(64), nullable=True)
     age = db.Column(db.Integer, nullable=True)
-    zipcode = db.Column(db.String(15), nullable=True)
+    is_student = db.Column(db.Boolean, nullable=False)
+    is_working = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -33,44 +35,49 @@ class User(db.Model):
                                                self.email)
 
 
-class Movie(db.Model):
-    """Movie on ratings website."""
+class Accomplishment(db.Model):
+    """Accomplishment of user"""
 
-    __tablename__ = "movies"
+    __tablename__ = "accomplishments"
 
-    movie_id = db.Column(db.Integer,
+    accomplishment_id = db.Column(db.Integer,
                          autoincrement=True,
                          primary_key=True)
-    title = db.Column(db.String(100))
-    released_at = db.Column(db.DateTime)
-    imdb_url = db.Column(db.String(200))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    text = db.Column(db.Text)
+    proof = db.Column(db.String(300), nullable=True)
+    category_type = db.Column(db.String(40))
+    needs_boost = db.Column(db.Boolean)
+    datetime = db.Column(db.DateTime)
+
+    user = db.relationship("User", backref=db.backref("accomplishments"))
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "<Movie movie_id=%s title=%s>" % (self.movie_id,
-                                                 self.title)
+        return "<Accomplishment accomplishment_id=%s text=%s>" % (self.accomplishment_id,
+                                               self.text)
 
 
-class Rating(db.Model):
-    """Rating of a movie by a user."""
+class Comment(db.Model):
+    """Comment on accomplishment"""
 
-    __tablename__ = "ratings"
+    __tablename__ = "comments"
 
-    rating_id = db.Column(db.Integer,
-                          autoincrement=True,
-                          primary_key=True)
-    movie_id = db.Column(db.Integer)
-    user_id = db.Column(db.Integer)
-    score = db.Column(db.Integer)
+    comment_id = db.Column(db.Integer,
+                           autoincrement=True,
+                           primary_key=True)
+    accomplishment_id = db.Column(db.Integer, db.ForeignKey('accomplishments.accomplishment_id'))
+    comment_text = db.Column(db.Text)
+    commenter_id = db.Column(db.Integer)
+
+    accomplishment = db.relationship("Accomplishment", backref=db.backref("comments"))
 
     def __repr__(self):
-        """Provide helpful representation when printed."""
+        """Provide helpful representation when printed"""
 
-        s = "<Rating rating_id=%s movie_id=%s user_id=%s score=%s>"
-        return s % (self.rating_id, self.movie_id, self.user_id,
-                    self.score)
-
+        return "<Comment comment_id=%s text=%s" % (self.comment_id,
+                                                   self.comment_text)
 
 #####################################################################
 # Helper functions
@@ -90,5 +97,5 @@ if __name__ == "__main__":
     # directly.
 
     from server import app
-    connect_to_db(app)
+    connect_to_db(app,'postgresql:///accomplish')
     print "Connected to DB."
