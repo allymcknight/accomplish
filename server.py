@@ -3,7 +3,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, session, request, flash
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db
+from model import connect_to_db, db, User, Comment, Accomplishment
 import os
 
 app = Flask(__name__)
@@ -26,7 +26,7 @@ def login_form():
 
     return render_template('login.html')
 
-@app.route('/login_submit')
+@app.route('/login_submit', methods=['POST'])
 def login_submit():
 
     email = request.form.get('username')
@@ -46,7 +46,13 @@ def login_submit():
     flash("Welcome, %s" % user.name)
     return redirect('/accomplishments/%s'% str(user.user_id))
 
+@app.route('/accomplishments/<int:user_id>')
+def show_accomplishments(user_id):
+    """Show user accomplishments"""
 
+    user = User.query.get(user_id)
+
+    return render_template('/accomplishments', user=user)
 
 
 
