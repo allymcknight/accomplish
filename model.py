@@ -25,8 +25,8 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(64), nullable=True)
     age = db.Column(db.Integer, nullable=True)
-    is_student = db.Column(db.Boolean, nullable=False)
-    is_working = db.Column(db.Boolean, nullable=False)
+    is_student = db.Column(db.Boolean, nullable=True)
+    is_working = db.Column(db.Boolean, nullable=True)
 
     def __repr__(self):
         """Provide helpful representation when printed."""

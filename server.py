@@ -28,6 +28,7 @@ def login_form():
 
 @app.route('/login_submit', methods=['POST'])
 def login_submit():
+    """Check username and password are correct and add to session."""
 
     email = request.form.get('username')
     password = request.form.get('password')
@@ -46,13 +47,37 @@ def login_submit():
     flash("Welcome, %s" % user.name)
     return redirect('/accomplishments/%s'% str(user.user_id))
 
+@app.route('/register_submit', methods=['POST'])
+def register_submit():
+    """Add a user to the db and bring to personal accomplishments redirect"""
+
+    email = request.form.get('username')
+    password = request.form.get('password')
+    name = request.form.get('name')
+
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        flash('This user already exists. Please log in.')
+        return redirect('/login')
+
+    user = User(email=email, password=password, name=name)
+    
+    db.session.add(user)
+    db.session.commit()
+
+    session['user_id'] = user.user_id
+
+    flash("Welcome, %s" % user.name)
+    return redirect('/accomplishments/%s'% str(user.user_id))
+
 @app.route('/accomplishments/<int:user_id>')
 def show_accomplishments(user_id):
     """Show user accomplishments"""
 
     user = User.query.get(user_id)
 
-    return render_template('/accomplishments', user=user)
+    return render_template('accomplishments.html', user=user)
 
 
 
