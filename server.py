@@ -52,7 +52,7 @@ def login_submit():
 def register_submit():
     """Add a user to the db and bring to personal accomplishments redirect"""
 
-    email = request.form.get('username')
+    email = request.form.get('email')
     password = request.form.get('password')
     name = request.form.get('name')
 
@@ -66,6 +66,7 @@ def register_submit():
     
     db.session.add(user)
     db.session.commit()
+    print user.email
 
     session['user_id'] = user.user_id
 
