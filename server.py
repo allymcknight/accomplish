@@ -45,6 +45,7 @@ def login_submit():
     session['user_id'] = user.user_id
 
     flash("Welcome, %s" % user.name)
+    #send to personal accomplishments
     return redirect('/accomplishments/%s'% str(user.user_id))
 
 @app.route('/register_submit', methods=['POST'])
