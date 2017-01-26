@@ -77,6 +77,12 @@ def register_submit():
 def show_accomplishments(user_id):
     """Show user accomplishments"""
 
+    if 'user_id' not in session:
+        return render_template('/login')
+        
+    if user_id != session['user_id']:
+        return render_template('/login')
+
     user = User.query.get(user_id)
 
     return render_template('accomplishments.html', user=user)
